@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using static Laba4_1_5.NodeList;
+﻿using static Laba4_1_5.NodeList;
 
 namespace Laba4_1_5;
 
@@ -12,7 +11,7 @@ internal class Program
         Console.ReadKey();
     }
 
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         Validator validator = new Validator();
 
@@ -20,7 +19,7 @@ internal class Program
         while (choice != 0)
         {
             Console.Clear();
-            Console.WriteLine("=== Лабораторная работа № ===");
+            Console.WriteLine("=== Лабораторная работа №4 ===");
             Console.WriteLine(" 0) Выход из программы");
 
             Console.WriteLine(" 1) 1.9.");
@@ -30,7 +29,7 @@ internal class Program
             Console.WriteLine(" 5) 5.9.");
 
             Console.WriteLine("============================");
-            choice = validator.ReadInt("Выберите пункт(0-7): ", 0, 7);
+            choice = validator.ReadInt("Выберите пункт(0-5): ", 0, 5);
             Console.WriteLine("============================");
 
             switch (choice)
@@ -42,7 +41,9 @@ internal class Program
                         var elements = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         if (elements.Length == 0)
                         {
-                            return;
+                            Console.WriteLine("Ошибка: Список элементов пуст.");
+                            Pause();
+                            break;
                         }
 
                         NodeList.Node<string>? head = null;
@@ -116,7 +117,7 @@ internal class Program
                         string elementToInsert = validator.ReadString("Введите элемент F (который вставить): ");
 
                         Console.WriteLine();
-                        Console.WriteLine($"Список до вставки {elementWhereInsert} по бокам элемента {elementToInsert}: ");
+                        Console.WriteLine($"Список до вставки {elementToInsert} по бокам элемента {elementWhereInsert}: ");
                         var current = list.First;
                         while (current != null)
                         {
@@ -134,7 +135,7 @@ internal class Program
                         Console.WriteLine();
 
                         Console.WriteLine();
-                        Console.WriteLine($"Список после вставки {elementWhereInsert} по бокам элемента {elementToInsert}: ");
+                        Console.WriteLine($"Список после вставки {elementToInsert} по бокам элемента {elementWhereInsert}: ");
                         NodeList.InsertAroundElement(list, elementWhereInsert, elementToInsert);
                         current = list.First;
                         while (current != null)
@@ -207,23 +208,43 @@ internal class Program
 
                 case 5:
                     {
-                        Console.WriteLine("Хз");
+                        Console.WriteLine("1. Сгенерировать данные автоматически (в файл applicants.txt)");
+                        Console.WriteLine("2. Ввести данные абитуриентов вручную с клавиатуры");
+                        int input = validator.ReadInt("Выберите вариант (1 или 2): ", 1, 2);
 
-                        Pause();
-                        break;
-                    }
+                        string filePath = "applicants.txt";
 
-                case 6:
-                    {
-                        Console.WriteLine("Хз");
+                        if (input == 2)
+                        {
+                            int n = validator.ReadInt("Введите количество абитуриентов N (до 500): ", 1, 500);
+                            using (StreamWriter writer = new StreamWriter(filePath, false, System.Text.Encoding.UTF8))
+                            {
+                                writer.WriteLine(n);
 
-                        Pause();
-                        break;
-                    }
+                                Console.WriteLine("Формат: Фамилия Имя Балл1 Балл2 Балл3 (например: Романов Вельямин 48 39 55)");
+                                for (int i = 0; i < n; i++)
+                                {
+                                    string line = validator.ReadString($"Абитуриент #{i+1} : ");
+                                    writer.WriteLine(line);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            int count = validator.ReadInt("Сколько всего абитуриентов: ", 1, 500);
+                            GenerateApplicantsFile(filePath, count);
+                            Console.WriteLine($"Файл '{filePath}' успешно создан.");
+                        }
 
-                case 7:
-                    {
-                        Console.WriteLine("Хз");
+                        try
+                        {
+                            Console.WriteLine("\nРезультаты отбора:");
+                            ProcessApplicants(filePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Ошибка при обработке: " + ex.Message);
+                        }
 
                         Pause();
                         break;
