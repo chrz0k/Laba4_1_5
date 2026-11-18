@@ -114,4 +114,37 @@ internal class NodeList
         }
     }
 
+    public static void PrintCharactersFromEvenWords(string filePath)
+    {
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException("Файл с текстом не найден.", filePath);
+        }
+
+        string text = File.ReadAllText(filePath);
+
+        MatchCollection matches = Regex.Matches(text, "[а-яёА-ЯЁ]+");
+
+        HashSet<char> uniqueChars = new HashSet<char>();
+
+        for (int i = 1; i < matches.Count; i += 2)
+        {
+            string word = matches[i].Value.ToLowerInvariant();
+
+            for (int j = 0; j < word.Length; j++)
+            {
+                uniqueChars.Add(word[j]);
+            }
+        }
+
+        List<char> sortedChars = new List<char>(uniqueChars);
+        sortedChars.Sort();
+
+        Console.WriteLine("Уникальные символы из слов с чётными номерами в алфавитном порядке:");
+        for (int i = 0; i < sortedChars.Count; i++)
+        {
+            Console.Write(sortedChars[i] + " ");
+        }
+        Console.WriteLine();
+    }
 }

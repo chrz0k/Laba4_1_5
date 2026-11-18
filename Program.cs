@@ -185,7 +185,21 @@ internal class Program
 
                 case 4:
                     {
-                        Console.WriteLine("Хз");
+                        string filePath = "text.txt";
+
+                        string text = validator.ReadString("Введите текст на русском языке: ");
+                        File.WriteAllText(filePath, text ?? string.Empty, System.Text.Encoding.UTF8);
+
+                        Console.WriteLine();
+
+                        try
+                        {
+                            PrintCharactersFromEvenWords(filePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Ошибка при обработке файла: " + ex.Message);
+                        }
 
                         Pause();
                         break;
